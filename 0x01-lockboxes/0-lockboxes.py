@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-from collections import deque
 """ Function that uses BFS traversal on a list of lists. """
 
 
@@ -17,14 +16,14 @@ def canUnlockAll(boxes):
     n = len(boxes)
     visited = [False] * n
     visited[0] = True
-    queue = deque([0])
+    result = [0]
 
     """ Perform BFS traversal to visit reachable boxes """
-    while queue:
-        current_box = queue.popleft()
+    while result:
+        current_box = result.pop()
         for key in boxes[current_box]:
-            if 0 <= key < n and not visited[key]:
+            if 0 < key < n and not visited[key]:
                 visited[key] = True
-                queue.append(key)
+                result.append(key)
     """  Check if all boxes have been visited """
     return all(visited)
