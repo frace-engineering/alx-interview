@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from collections import deque
+""" Function that uses BFS traversal on a list of lists. """
 
 
 def canUnlockAll(boxes):
