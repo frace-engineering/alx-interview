@@ -7,6 +7,9 @@ if given boxes can be unlocked
 
 
 def canUnlockAll(boxes):
+    """"canUnlockAll that determines
+    if given boxes can be unlocked
+    """
     n = len(boxes)
     visited = [False] * n
     visited[0] = True
