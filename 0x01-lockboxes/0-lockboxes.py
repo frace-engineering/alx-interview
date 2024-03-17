@@ -1,26 +1,29 @@
 #!/usr/bin/python3
 from collections import deque
 
-"""Define afunction named canUnlockAll that determines
-if given boxes can be unlocked
-"""
-
 
 def canUnlockAll(boxes):
-    """"canUnlockAll that determines
-    if given boxes can be unlocked
     """
+        Determines if all boxes can be unlocked by checking for valid keys.
+
+        Args:
+            boxes (list of list): A list of lists representing the boxes
+            and their keys.
+
+        Returns:
+              bool: True if all boxes can be opened, False otherwise.
+        """
     n = len(boxes)
     visited = [False] * n
     visited[0] = True
     queue = deque([0])
 
-    """Iterate through the Items in the boxes to check foe correct key"""
+    """ Perform BFS traversal to visit reachable boxes """
     while queue:
         current_box = queue.popleft()
         for key in boxes[current_box]:
             if 0 <= key < n and not visited[key]:
                 visited[key] = True
                 queue.append(key)
-
+    """  Check if all boxes have been visited """
     return all(visited)
