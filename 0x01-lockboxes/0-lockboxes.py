@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from collections import deque
 
 """Define afunction named canUnlockAll that determines
