@@ -3,6 +3,8 @@ from collections import deque
 """Define afunction named canUnlockAll that determines
 if given boxes can be unlocked
 """
+
+
 def canUnlockAll(boxes):
     n = len(boxes)
     visited = [False] * n
@@ -18,4 +20,3 @@ def canUnlockAll(boxes):
                 queue.append(key)
 
     return all(visited)
-
