@@ -1,44 +1,65 @@
 #!/usr/bin/python3
-"""script that reads stdin line by line and computes metrics.
+"""
+Script that reads stdin line by line and computes metrics.
 """
 import sys
+import signal
 
 
-def print_statistics(lines_count, total_file_size, status_code_counts):
-    """Print the status code"""
-    print(f"File size: {total_file_size}")
-    for status_code in sorted(status_code_counts.keys()):
-        if status_code_counts[status_code] > 0:
-            print(f"{status_code}: {status_code_counts[status_code]}")
+""" Initialize global variables to store metrics """
+total_file_size = 0
+status_code_counts = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0,
+                      404: 0, 405: 0, 500: 0}
+lines_processed = 0
 
 
-def main():
-    """Entry point of the function"""
-    lines_count = 0
+def print_metrics():
+    """Pring matrics"""
+    global total_file_size
+    global status_code_counts
+    global lines_processed
+    print("Total file size:", total_file_size)
+    for status_code, count in sorted(status_code_counts.items()):
+        if count > 0:
+            print(f"{status_code}: {count}")
+    """ Reset metrics """
     total_file_size = 0
-    status_code_counts = {200: 0, 301: 0, 400: 0, 401: 0,
-                          403: 0, 404: 0, 405: 0, 500: 0}
+    status_code_counts = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0,
+                          404: 0, 405: 0, 500: 0}
+    lines_processed = 0
 
+
+def process_line(line):
+    global total_file_size
+    global status_code_counts
+    global lines_processed
     try:
-        """Read stdin line by line"""
-        for line in sys.stdin:
-            parts = line.strip().split()
-            if len(parts) >= 6 and parts[-1].isdigit():
-                file_size = int(parts[-1])
-                total_file_size += file_size
-                status_code = int(parts[-2])
-                if status_code in status_code_counts:
-                    status_code_counts[status_code] += 1
-
-            lines_count += 1
-
-            if lines_count % 10 == 0:
-                print_statistics(lines_count, total_file_size,
-                                 status_code_counts)
-
-    except KeyboardInterrupt:
-        print_statistics(lines_count, total_file_size, status_code_counts)
+        parts = line.split()
+        if len(parts) >= 6:
+            status_code = int(parts[-2])
+            file_size = int(parts[-1])
+            total_file_size += file_size
+            if status_code in status_code_counts:
+                status_code_counts[status_code] += 1
+    except ValueError:
+        pass
 
 
-if __name__ == "__main__":
-    main()
+def signal_handler(signal, frame):
+    print_metrics()
+    sys.exit(0)
+
+
+signal.signal(signal.SIGINT, signal_handler)
+
+try:
+    for line in sys.stdin:
+        process_line(line.strip())
+        lines_processed += 1
+        if lines_processed % 10 == 0:
+            print_metrics()
+except KeyboardInterrupt:
+    pass
+
+
+print_metrics()
