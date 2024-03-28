@@ -20,7 +20,7 @@ def print_metrics():
     global lines_processed
     print("File size:", total_file_size)
     for status_code, count in sorted(status_code_counts.items()):
-        if count > 0:
+        if count > 0 and isinstance(status_code, int):
             print(f"{status_code}: {count}")
     """ Reset metrics """
     """total_file_size = 0
