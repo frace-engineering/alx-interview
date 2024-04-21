@@ -29,21 +29,31 @@ request(apiUrl, (error, response, body) => {
     console.log('No character information found for this movie.');
     process.exit(0);
   }
-
-  characters.forEach((characterUrl) => {
-    request(characterUrl, (error, response, body) => {
-      if (error) {
-        console.error('Error occurred while fetching character data:', error);
+  const fetchCharacterData = (characterUrl) => {
+    return new Promise((resolve, rejwct) => {
+      request(characterUrl, (error, response, body) => {
+        if (error) {
+          reject('Error occurred while fetching character data: ' + error);
         return;
       }
 
       if (response.statusCode !== 200) {
-        console.error('Failed to fetch character data. Status code:', response.statusCode);
+        reject('Failed to fetch character data. Status code: ' + response.statusCode);
         return;
       }
 
       const characterData = JSON.parse(body);
       console.log(characterData.name);
     });
+  });
+};
+
+const characterPromises = characters.map(fetchCharacterData);
+Promise.all(characterPromises)
+  .then(characterNames => {
+    characterNames.forEach(name => console.log(name));
+  })
+  .catch(error => {
+    console.error(error);
   });
 });
